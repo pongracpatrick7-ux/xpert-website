@@ -33,3 +33,17 @@ if (form) {
     }
   });
 }
+
+// Hero video: paused for reduced motion / data saver.
+const vid = document.querySelector('.hero-video');
+const vbtn = document.querySelector('.video-toggle');
+if (vid) {
+  const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches || (navigator.connection && navigator.connection.saveData);
+  const setPaused = (p) => { if (vbtn) { vbtn.setAttribute('aria-pressed', String(p)); vbtn.setAttribute('aria-label', p ? 'Video abspielen' : 'Video pausieren'); } };
+  if (calm) { vid.removeAttribute('autoplay'); vid.preload = 'none'; setPaused(true); }
+  vid.src = vid.dataset.src;
+  if (!calm) vid.play().catch(() => setPaused(true));
+  if (vbtn) vbtn.addEventListener('click', () => {
+    if (vid.paused) { vid.play(); setPaused(false); } else { vid.pause(); setPaused(true); }
+  });
+}
