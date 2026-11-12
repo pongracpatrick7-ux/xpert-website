@@ -1,3 +1,4 @@
+const EN = document.documentElement.lang === 'en';
 // Mobile menu
 const toggle = document.querySelector('.menu-toggle');
 const nav = document.getElementById('nav');
@@ -22,14 +23,14 @@ if (form) {
       window.location.href = 'mailto:contact@xpertreinigung.de?subject=' + encodeURIComponent('Anfrage über die Website') + '&body=' + encodeURIComponent(body);
       return;
     }
-    status.textContent = 'Wird gesendet …';
+    status.textContent = EN ? 'Sending …' : 'Wird gesendet …';
     try {
       const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: data });
       const json = await res.json();
       if (!json.success) throw new Error(json.message);
       window.location.href = 'danke/';
     } catch (err) {
-      status.textContent = 'Das hat leider nicht geklappt. Bitte schreiben Sie uns direkt an contact@xpertreinigung.de.';
+      status.textContent = EN ? 'Sorry, that did not work. Please email us directly at contact@xpertreinigung.de.' : 'Das hat leider nicht geklappt. Bitte schreiben Sie uns direkt an contact@xpertreinigung.de.';
     }
   });
 }
@@ -39,7 +40,7 @@ const vid = document.querySelector('.hero-video');
 const vbtn = document.querySelector('.video-toggle');
 if (vid) {
   const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches || (navigator.connection && navigator.connection.saveData);
-  const setPaused = (p) => { if (vbtn) { vbtn.setAttribute('aria-pressed', String(p)); vbtn.setAttribute('aria-label', p ? 'Video abspielen' : 'Video pausieren'); } };
+  const setPaused = (p) => { if (vbtn) { vbtn.setAttribute('aria-pressed', String(p)); vbtn.setAttribute('aria-label', p ? (EN ? 'Play video' : 'Video abspielen') : (EN ? 'Pause video' : 'Video pausieren')); } };
   if (calm) { vid.removeAttribute('autoplay'); vid.preload = 'none'; setPaused(true); }
   vid.src = vid.dataset.src;
   if (!calm) vid.play().catch(() => setPaused(true));
