@@ -85,13 +85,12 @@
     },
   };
 
-  // Pictures per room: [dirty, clean, hotspot positions in % (x, y) in the order of the texts above].
-  // Until the four room pictures exist, every room shows the sample pair.
+  // Pictures per room: [dirty, clean, hotspot positions in % (x, y) in the order of the texts above, sample flag].
   const ROOM_IMG = {
-    bad: ['demo-vorher.webp', 'demo-nachher.webp', [[30, 62], [52, 50], [72, 44], [86, 30], [50, 86]], true],
-    flur: ['demo-vorher.webp', 'demo-nachher.webp', [[12, 50], [5, 34], [66, 36], [40, 84]], true],
-    schlaf: ['demo-vorher.webp', 'demo-nachher.webp', [[70, 62], [42, 62], [26, 44], [66, 36], [30, 86]], true],
-    kueche: ['demo-vorher.webp', 'demo-nachher.webp', [[70, 60], [50, 58], [86, 46], [22, 78], [48, 88]], true],
+    bad: ['bad-vorher.webp', 'bad-nachher.webp', [[15, 70], [49, 53], [71, 50], [48, 29], [50, 93]], false],
+    flur: ['flur-vorher.webp', 'flur-nachher.webp', [[25, 70], [45, 48], [82, 46], [62, 90]], false],
+    schlaf: ['schlafzimmer-vorher.webp', 'schlafzimmer-nachher.webp', [[13, 56], [53, 62], [84, 58], [34, 48], [50, 92]], false],
+    kueche: ['kueche-vorher.webp', 'kueche-nachher.webp', [[47, 50], [23, 70], [69, 40], [85, 58], [66, 86]], false],
   };
 
   const state = { tab: 'apt', apt: { size: 's1', freq: 'once' }, office: { m2: 100 }, move: { size: 's1', when: 'after' }, stairs: { floors: 3, freq: 'weekly' }, room: 'bad' };
