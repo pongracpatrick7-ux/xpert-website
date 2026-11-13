@@ -186,3 +186,86 @@ p{margin:0}
 .legal .note{color:#7C8796;font-size:14px}
 
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+
+/* Price calculator */
+.prices{background:linear-gradient(180deg,var(--night) 0%,var(--graphite) 22%,var(--graphite) 70%,#05080E 100%)}
+.calc-tabs{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:26px}
+.calc-tabs button,.room-tabs button{font:600 14px var(--sans);color:#C9D0D9;background:rgba(11,19,34,.6);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:12px 20px;cursor:pointer;transition:background .2s,border-color .2s,color .2s}
+.calc-tabs button:hover,.room-tabs button:hover{border-color:rgba(11,177,255,.6);color:#fff}
+.calc-tabs button[aria-selected=true],.room-tabs button[aria-selected=true]{background:var(--blue);border-color:var(--blue);color:var(--night)}
+.calc-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,380px);gap:28px;align-items:start}
+.calc-opts{background:linear-gradient(160deg,rgba(11,19,34,.8),rgba(2,11,27,.6));border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:clamp(20px,3vw,36px);display:flex;flex-direction:column;gap:30px;min-height:360px}
+.opt{border:0;margin:0;padding:0;min-width:0}
+.opt legend{font-family:var(--serif);font-size:22px;color:#fff;padding:0;margin-bottom:6px}
+.opt-hint{font-size:14px;color:var(--muted);margin:0 0 14px}
+.opt.info h3{font-size:26px;margin-bottom:14px}.opt.info p{color:var(--soft);max-width:560px}
+.chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:10px}
+.chip{position:relative;cursor:pointer}
+.chip input{position:absolute;opacity:0;inset:0;cursor:pointer}
+.chip span{display:flex;flex-direction:column;gap:2px;height:100%;min-height:74px;justify-content:center;padding:14px 16px;border-radius:14px;border:1px solid rgba(255,255,255,.16);background:rgba(5,8,14,.5);transition:border-color .2s,background .2s,box-shadow .2s}
+.chip b{font-weight:600;color:#fff;font-size:15px}
+.chip small{font-size:12px;color:#8F9AA8}
+.chip i{position:absolute;top:-9px;right:10px;font-style:normal;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--mint);color:var(--night)}
+.chip:hover span{border-color:rgba(11,177,255,.55)}
+.chip input:checked+span{border-color:var(--blue);background:rgba(11,177,255,.12);box-shadow:0 0 0 1px var(--blue) inset}
+.chip input:focus-visible+span{outline:3px solid var(--blue);outline-offset:3px}
+.office{display:grid;gap:10px}
+.office-pic svg{width:100%;height:auto;max-height:300px;display:block}
+.office-ctrl{display:flex;gap:18px;align-items:center}
+.office-ctrl input[type=range]{flex:1;accent-color:var(--blue);height:28px}
+.m2box{display:flex;align-items:center;gap:8px;background:rgba(5,8,14,.6);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:0 14px}
+.m2box input{width:76px;background:none;border:0;color:#fff;font:600 18px var(--sans);padding:12px 0;text-align:right}
+.m2box input:focus{outline:none}.m2box:focus-within{border-color:var(--blue)}
+.m2box span{color:var(--muted);font-size:14px}
+.calc-sum{position:sticky;top:110px;background:linear-gradient(160deg,rgba(15,42,68,.85),rgba(11,19,34,.85));border:1px solid rgba(11,177,255,.3);border-radius:20px;padding:30px;display:flex;flex-direction:column;gap:18px;box-shadow:0 30px 60px rgba(0,0,0,.4);backdrop-filter:blur(10px)}
+.calc-sum::before{content:"";position:absolute;left:30px;right:30px;top:0;height:2px;background:linear-gradient(90deg,var(--blue),var(--mint))}
+.calc-sum .kicker{font-size:12px;font-weight:600;letter-spacing:.32em;text-transform:uppercase;color:var(--mint)}
+.calc-sum dl{margin:0;display:flex;flex-direction:column;gap:10px;font-size:14px}
+.calc-sum dl div{display:flex;justify-content:space-between;gap:16px;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:10px}
+.calc-sum dt{color:#9AA3AF}.calc-sum dd{margin:0;color:#fff;font-weight:600;text-align:right}
+.sum-price{display:flex;flex-direction:column;gap:2px}
+.sum-price s{font-size:14px;color:#8F9AA8}
+.sum-price strong{font-family:var(--serif);font-weight:400;font-size:46px;line-height:1.1;color:#fff}
+.sum-price strong.word{font-size:30px}
+.sum-price small{font-size:13px;color:#9AA3AF}
+.sum-note{margin:0;font-size:12px;color:#8F9AA8}
+.calc-sum .btn{width:100%}
+.calc-form-wrap{margin-top:28px;scroll-margin-top:100px}
+.calc-form-wrap h3{font-size:28px;margin-bottom:6px}
+.calc-form-wrap>p{color:var(--muted);margin:0 0 18px}
+.form .choice{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline;background:rgba(11,177,255,.1);border:1px solid rgba(11,177,255,.3);border-radius:12px;padding:14px 16px;font-size:14px}
+.form .choice b{color:var(--mint);font-size:11px;letter-spacing:.2em;text-transform:uppercase;width:100%}
+.form .choice span{color:var(--soft);flex:1;min-width:200px}
+.form .choice strong{color:#fff;font-size:16px;white-space:nowrap}
+#calc-done{border:1px solid rgba(11,177,255,.35);border-radius:20px;background:#0B1322;color:var(--text);padding:40px;max-width:min(460px,90vw);text-align:center;box-shadow:0 40px 80px rgba(0,0,0,.6)}
+#calc-done::backdrop{background:rgba(2,11,27,.75);backdrop-filter:blur(4px)}
+#calc-done h3{font-size:30px;margin-bottom:12px}#calc-done p{color:var(--soft);margin:0 0 24px}
+
+/* Room explorer */
+.rooms{margin-top:90px}
+.rooms-head{margin-bottom:22px}.rooms-head h3{font-size:clamp(26px,3.2vw,36px);margin-bottom:8px}.rooms-head p{color:var(--muted);margin:0}
+.room-tabs{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px}
+.room-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,340px);gap:24px;align-items:start}
+.room-stage{position:relative;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,.1);--x:50%;--y:50%}
+.room-stage img{display:block;width:100%;height:auto}
+.room-clean{position:absolute;inset:0;height:100%!important;object-fit:cover;clip-path:circle(0 at var(--x) var(--y));transition:clip-path .45s ease}
+.room-stage.show .room-clean{clip-path:circle(clamp(90px,17%,170px) at var(--x) var(--y))}
+.room-demo{position:absolute;left:14px;top:14px;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;background:rgba(2,11,27,.7);color:#C9D0D9;padding:6px 10px;border-radius:999px}
+.spot{position:absolute;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;border:0;background:none;cursor:pointer;display:grid;place-items:center;z-index:2}
+.spot span{width:16px;height:16px;border-radius:50%;background:var(--blue);box-shadow:0 0 0 5px rgba(11,177,255,.3),0 0 0 0 rgba(11,177,255,.5);animation:spot 2s ease-out infinite}
+.spot.on span{background:var(--mint);animation:none;box-shadow:0 0 0 5px rgba(23,220,175,.35)}
+@keyframes spot{0%{box-shadow:0 0 0 5px rgba(11,177,255,.3),0 0 0 0 rgba(11,177,255,.5)}100%{box-shadow:0 0 0 5px rgba(11,177,255,.3),0 0 0 16px rgba(11,177,255,0)}}
+.room-tip{position:absolute;z-index:3;transform:translate(-50%,calc(-100% - 26px));width:min(260px,70%);background:rgba(2,11,27,.92);border:1px solid rgba(11,177,255,.4);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--soft);pointer-events:none;box-shadow:0 16px 32px rgba(0,0,0,.5)}
+.room-tip.below{transform:translate(-50%,26px)}
+.room-tip b{display:block;color:#fff;font-size:14px;margin-bottom:2px}
+.room-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.room-list li{display:flex;flex-direction:column;gap:2px;padding:14px 16px 14px 18px;border-radius:12px;border:1px solid rgba(255,255,255,.1);border-left:3px solid rgba(11,177,255,.5);background:rgba(11,19,34,.6);cursor:pointer;transition:border-color .2s,background .2s}
+.room-list li b{color:#fff;font-weight:600;font-size:15px}.room-list li span{font-size:13px;color:var(--muted)}
+.room-list li.on,.room-list li:hover{border-color:rgba(23,220,175,.6);border-left-color:var(--mint);background:rgba(23,220,175,.08)}
+@media (max-width:900px){
+  .calc-body,.room-grid{grid-template-columns:1fr}
+  .calc-sum{position:static}
+  .calc-tabs,.room-tabs{flex-wrap:nowrap;overflow-x:auto;padding-bottom:6px;margin-right:calc(-1*clamp(16px,5vw,80px));padding-right:16px}
+  .calc-tabs button,.room-tabs button{white-space:nowrap;flex:none}
+  .rooms{margin-top:60px}
+}

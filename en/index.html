@@ -75,61 +75,36 @@
 <section class="prices" id="preise">
   <div class="wrap">
     <div class="prices-head">
-      <h2>Five services.<br><em>One standard.</em></h2>
-      <p>"From" is the starting price. Final prices – no VAT charged (small business, § 19 UStG). You always get a fixed quote in advance.</p>
+      <h2>Your fixed price.<br><em>Calculated instantly.</em></h2>
+      <p>Choose your cleaning and the price appears right away. Final prices, no VAT charged (§ 19 UStG).</p>
     </div>
-    <div class="cards">
-<article class="card ">
-  <div class="num">01</div><h3>Apartment &amp; House</h3><p>Kitchen, bathroom, floors and dusting – one-off or regular.</p>
-  <div class="price"><small>from</small><strong>90 €</strong><small>per visit</small></div>
-  <a class="go" href="#anfrage">Enquire →</a>
-</article>
-<article class="card featured">
-  <div class="num">02 · Popular</div><h3>Hotel rooms &amp; Airbnb</h3><p>Final cleaning, bed linen and towels after every guest.</p>
-  <div class="price"><small>from</small><strong>35 €</strong><small>per changeover</small></div>
-  <a class="go" href="#anfrage">Enquire</a>
-</article>
-<article class="card ">
-  <div class="num">03</div><h3>Office</h3><p>Fixed cleaning schedule, evenings or weekends.</p>
-  <div class="price"><small>after a viewing</small><strong class="word">Fixed price</strong><small>per month</small></div>
-  <a class="go" href="#anfrage">Book a viewing →</a>
-</article>
-<article class="card ">
-  <div class="num">04</div><h3>Buildings &amp; Stairwells</h3><p>Stairs, railings and entrance – for buildings and owners' associations.</p>
-  <div class="price"><small>fixed schedule</small><strong class="word">Fixed price</strong><small>per month</small></div>
-  <a class="go" href="#anfrage">Enquire →</a>
-</article>
-<article class="card special">
-  <div class="num">05 · Special offer</div><h3>[Offer name]</h3><p>[Description, valid until …]</p>
-  <div class="price"><strong class="word">[Price]</strong></div>
-  <a class="go" href="#anfrage">Claim →</a>
-</article>
+    <div id="calc" class="calc"><noscript><p>One-off apartment cleaning: small apartment €85, 2 rooms €105, 3 rooms €130. Office: €1.19 per m², minimum €80. Stairwell up to 3 floors: from €70 per visit. Requests by email to contact@xpertreinigung.de.</p></noscript></div>
+    <div class="calc-form-wrap" id="anfrage" hidden>
+      <h3>Request cleaning</h3>
+      <p>Free and without obligation. We will contact you within 24 hours.</p>
+      <form id="calc-form" class="form" action="https://api.web3forms.com/submit" method="POST">
+        <input type="hidden" name="access_key" value="WEB3FORMS_ACCESS_KEY">
+        <input type="hidden" name="subject" value="Neue Anfrage über xpertreinigung.de (Englisch)">
+        <input type="hidden" name="auswahl" value="">
+        <input type="hidden" name="preis" value="">
+        <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div class="choice full"></div>
+        <label>First name*<input name="vorname" required autocomplete="given-name"></label>
+        <label>Last name*<input name="nachname" required autocomplete="family-name"></label>
+        <label>Email*<input name="email" type="email" required autocomplete="email"></label>
+        <label>Phone*<input name="telefon" type="tel" required autocomplete="tel"></label>
+        <label>Street and house number*<input name="strasse" required autocomplete="street-address"></label>
+        <label>Postcode and town*<input name="ort" required autocomplete="address-level2"></label>
+        <label class="full">Preferred date<input name="wunschtermin" type="date"></label>
+        <label class="full">Additional information<textarea name="nachricht" placeholder="e.g. size in m², pets, parking, special requests"></textarea></label>
+        <label class="consent full"><input type="checkbox" name="datenschutz" required><span>I have read the <a href="../datenschutz/">privacy policy</a> (in German) and agree.*</span></label>
+        <button class="btn full" type="submit">Request cleaning</button>
+        <p class="form-status full" role="status" aria-live="polite"></p>
+      </form>
     </div>
+    <div id="rooms" class="rooms"></div>
   </div>
-</section>
-
-<section class="request" id="anfrage">
-  <img class="request-bg" src="../assets/img/kueche-1600.webp" srcset="../assets/img/kueche-800.webp 800w, ../assets/img/kueche-1600.webp 1600w" sizes="100vw" alt="" loading="lazy">
-  <div class="wrap">
-    <div class="request-head"><h2>Your fixed price within 24 hours</h2><p>Free and without obligation.</p></div>
-    <form id="anfrage-form" class="form" action="https://api.web3forms.com/submit" method="POST">
-      <input type="hidden" name="access_key" value="WEB3FORMS_ACCESS_KEY">
-      <input type="hidden" name="subject" value="Neue Anfrage über xpertreinigung.de (Englisch)">
-      <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-      <label>First name*<input name="vorname" required autocomplete="given-name"></label>
-      <label>Last name*<input name="nachname" required autocomplete="family-name"></label>
-      <label>Email*<input name="email" type="email" required autocomplete="email"></label>
-      <label>Phone<input name="telefon" type="tel" autocomplete="tel"></label>
-      <label>Address / town*<input name="ort" required autocomplete="address-level2"></label>
-      <label>Type of cleaning*<select name="reinigungsart" required><option value="">Please choose</option><option>Apartment &amp; House</option><option>Hotel room / Airbnb</option><option>Office</option><option>Building &amp; Stairwell</option><option>Special offer</option><option>Other</option></select></label>
-      <label>How often?<select name="haeufigkeit"><option>One-off</option><option>Daily</option><option>Weekly</option><option>Twice a month</option><option>Monthly</option><option>Not sure yet</option></select></label>
-      <label>Preferred date<input name="wunschtermin" type="date"></label>
-      <label class="full">Message<textarea name="nachricht" placeholder="e.g. size in m², number of rooms, special requests"></textarea></label>
-      <label class="consent full"><input type="checkbox" name="datenschutz" required><span>I have read the <a href="../datenschutz/">privacy policy</a> (in German) and agree.*</span></label>
-      <button class="btn full" type="submit">Send request</button>
-      <p class="form-status full" role="status" aria-live="polite"></p>
-    </form>
-  </div>
+  <dialog id="calc-done" aria-labelledby="calc-done-t"><h3 id="calc-done-t">Thank you!</h3><p></p><button type="button" class="btn">Close</button></dialog>
 </section>
 
 <section class="contact" id="kontakt">
@@ -179,5 +154,6 @@
   </div>
 </footer>
 <script src="../assets/js/main.js" defer></script>
+<script src="../assets/js/calc.js" defer></script>
 </body>
 </html>
