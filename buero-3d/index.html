@@ -1,0 +1,12 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>3D-Büro Test | X-pert Reinigung</title>
+<style>body{margin:0;background:#05080E;color:#e8ecf4;font-family:system-ui,sans-serif;text-align:center;padding:24px 16px}
+h1{font-size:22px;font-weight:600}p{color:#9aa6bd;margin:6px 0 18px}
+#o{max-width:980px;margin:0 auto;aspect-ratio:16/9;background:radial-gradient(ellipse at 50% 55%,#0e1830,#05080E 70%);border-radius:18px;overflow:hidden}
+#o canvas{width:100%;height:100%;display:block}
+.c{max-width:640px;margin:18px auto;display:flex;gap:16px;align-items:center}input{flex:1;accent-color:#2f8cff;height:28px}b{min-width:80px;font-size:20px;color:#4da3ff}</style></head>
+<body><h1>3D-Büro (Test)</h1><p>Mit der Maus oder dem Finger drehen. Regler bewegen: das Büro wächst mit den m².</p>
+<div id="o"></div><div class="c"><input type="range" id="r" min="20" max="400" step="5" value="80"><b id="v">80 m²</b></div>
+<script type="module">import {mountOffice} from '../assets/js/office3d.js';
+const o=mountOffice(document.getElementById('o'),80);window.o3=o;const r=document.getElementById('r');
+r.addEventListener('input',()=>{document.getElementById('v').textContent=r.value+' m²';o.set(+r.value)});</script></body></html>
