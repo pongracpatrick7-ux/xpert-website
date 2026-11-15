@@ -63,3 +63,19 @@ if (vid) {
     else if (vid.paused) { vid.play(); setPaused(false); } else { vid.pause(); setPaused(true); }
   });
 }
+
+// Service tiles open the matching calculator tab.
+document.querySelectorAll('[data-tab-go]').forEach((a) => a.addEventListener('click', () => {
+  const b = document.querySelector(`.calc-tabs button[data-tab="${a.dataset.tabGo}"]`);
+  if (b) b.click();
+}));
+
+// Gentle reveal on scroll.
+if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.sec-head, .svc, .steps li, .promise-box, .contact-panel, .map-card').forEach((el, i) => {
+    const sib = [...el.parentNode.children].indexOf(el);
+    el.style.setProperty('--d', (el.matches('.svc, .steps li') ? sib * 0.08 : 0) + 's');
+    el.classList.add('rv'); io.observe(el);
+  });
+}
