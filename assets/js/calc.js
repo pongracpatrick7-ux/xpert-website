@@ -140,24 +140,18 @@
   }
   const sizeOpts = () => Object.keys(APT).map((k) => [k, T.sizes[k][0], T.sizes[k][1]]);
 
-  function officeSvg(m2) {
-    const side = Math.sqrt(m2), k = 9.5, cx = 200, top = 132 - (side * k) / 2;
-    const P = (x, y, z = 0) => `${(cx + (x - y) * k * 0.866).toFixed(1)},${(top + (x + y) * k * 0.5 - z * k).toFixed(1)}`;
-    const poly = (pts, fill, stroke = 'none') => `<polygon points="${pts.join(' ')}" fill="${fill}" stroke="${stroke}" stroke-width="1"/>`;
-    const h = 2.6;
-    let out = poly([P(0, 0), P(side, 0), P(side, side), P(0, side)], '#16263d', 'rgba(11,177,255,.5)');
-    out += poly([P(0, 0), P(0, side), P(0, side, h), P(0, 0, h)], '#0f1c30', 'rgba(255,255,255,.12)');
-    out += poly([P(0, 0), P(side, 0), P(side, 0, h), P(0, 0, h)], '#13233b', 'rgba(255,255,255,.12)');
-    out += poly([P(side * 0.15, 0, 0.9), P(side * 0.85, 0, 0.9), P(side * 0.85, 0, 2.2), P(side * 0.15, 0, 2.2)], 'rgba(11,177,255,.28)', 'rgba(11,177,255,.6)');
-    out += poly([P(0, side * 0.2, 0.9), P(0, side * 0.8, 0.9), P(0, side * 0.8, 2.2), P(0, side * 0.2, 2.2)], 'rgba(23,220,175,.16)', 'rgba(23,220,175,.45)');
-    const a = 1.6, b = 0.8, dh = 0.75, step = 3.2, m = 1.4, desks = [];
-    for (let x = m; x + a <= side - 0.6; x += step) for (let y = m; y + b <= side - 0.6; y += step) desks.push([x, y]);
-    desks.sort((p, q) => p[0] + p[1] - (q[0] + q[1])).slice(0, 49).forEach(([x, y]) => {
-      out += poly([P(x, y + b), P(x + a, y + b), P(x + a, y + b, dh), P(x, y + b, dh)], '#31465f');
-      out += poly([P(x + a, y), P(x + a, y + b), P(x + a, y + b, dh), P(x + a, y, dh)], '#263a52');
-      out += poly([P(x, y, dh), P(x + a, y, dh), P(x + a, y + b, dh), P(x, y + b, dh)], '#C5CED9');
-    });
-    return `<svg viewBox="0 0 400 270" role="img" aria-label="${m2} m²">${out}<text x="200" y="262" text-anchor="middle" fill="#0BB1FF" font-size="15" font-weight="600" font-family="Montserrat, sans-serif">${m2} m²</text></svg>`;
+  // Office pictures: [from this many m², file]. The slider fades to the matching one.
+  const OFFICE_IMG = [[0, 'buero-80.webp'], [150, 'buero-300.webp']];
+  const officeIdx = (m2) => OFFICE_IMG.reduce((best, [from], i) => (m2 >= from ? i : best), 0);
+  function officePic(m2) {
+    const on = officeIdx(m2);
+    return OFFICE_IMG.map(([, f], i) => `<img src="${IMG}${f}" alt="" width="1400" height="781"${i === on ? ' class="on"' : ''}>`).join('') + `<span class="office-m2">${m2} m²</span>`;
+  }
+  function officeUpdate(m2) {
+    const pic = optsEl.querySelector('#office-pic'); if (!pic) return;
+    const on = officeIdx(m2);
+    pic.querySelectorAll('img').forEach((im, i) => im.classList.toggle('on', i === on));
+    pic.querySelector('.office-m2').textContent = m2 + ' m²';
   }
 
   function options() {
@@ -165,7 +159,7 @@
     if (s.tab === 'apt') return chips('size', T.size, sizeOpts(), s.apt.size, T.sizeHint) +
       chips('freq', T.freq, Object.keys(FREQ).map((k) => [k, T.freqs[k], '', FREQ[k] ? '−' + pct(FREQ[k]) : '']), s.apt.freq);
     if (s.tab === 'office') return `<fieldset class="opt"><legend>${T.area}</legend><p class="opt-hint">${T.officeHint}</p>
-      <div class="office"><div class="office-pic" id="office-pic">${officeSvg(s.office.m2)}</div>
+      <div class="office"><div class="office-pic" id="office-pic">${officePic(s.office.m2)}</div>
       <div class="office-ctrl"><input type="range" id="m2r" min="20" max="400" step="5" value="${s.office.m2}" aria-label="${T.area}">
       <label class="m2box"><input type="number" id="m2n" min="10" max="2000" step="1" value="${s.office.m2}" inputmode="numeric" aria-label="${T.area}"><span>m²</span></label></div></div></fieldset>`;
     if (s.tab === 'move') return chips('size', T.size, sizeOpts(), s.move.size, T.moveHint) +
@@ -238,7 +232,7 @@
     const r = optsEl.querySelector('#m2r'), n = optsEl.querySelector('#m2n');
     if (from !== 'm2r' && r) r.value = Math.min(400, m2);
     if (n && (from !== 'm2n' || Number(n.value) !== m2)) n.value = m2;
-    optsEl.querySelector('#office-pic').innerHTML = officeSvg(Math.min(m2, 400));
+    officeUpdate(m2);
     renderSum();
   }
 
