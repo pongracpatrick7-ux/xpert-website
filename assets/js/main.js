@@ -41,9 +41,25 @@ const vbtn = document.querySelector('.video-toggle');
 if (vid) {
   const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches || (navigator.connection && navigator.connection.saveData);
   const setPaused = (p) => { if (vbtn) { vbtn.setAttribute('aria-pressed', String(p)); vbtn.setAttribute('aria-label', p ? (EN ? 'Play video' : 'Video abspielen') : (EN ? 'Pause video' : 'Video pausieren')); } };
-  if (calm) { vid.removeAttribute('autoplay'); vid.preload = 'none'; setPaused(true); }
+  const endCard = document.querySelector('.hero-end');
+  if (calm) { vid.removeAttribute('autoplay'); vid.preload = 'none'; setPaused(true); if (endCard) endCard.classList.add('on'); }
+  vid.muted = true; vid.defaultMuted = true; vid.playsInline = true;
+  vid.setAttribute('muted', ''); vid.setAttribute('playsinline', ''); vid.setAttribute('webkit-playsinline', '');
   vid.src = vid.dataset.src;
-  if (!calm) vid.play().catch(() => setPaused(true));
+  if (!calm) {
+    // Some phones (battery saver, strict autoplay rules) refuse to start a film on their own.
+    // Try again when it is ready, and start it on the visitor's first touch or scroll.
+    let userPaused = false;
+    const tryPlay = () => { if (userPaused || !vid.paused) return; const p = vid.play(); if (p) p.then(() => setPaused(false)).catch(() => setPaused(true)); };
+    const evs = ['touchstart', 'pointerdown', 'click', 'keydown', 'scroll'];
+    const kick = () => tryPlay();
+    evs.forEach((e) => window.addEventListener(e, kick, { passive: true }));
+    vid.addEventListener('playing', () => { setPaused(false); evs.forEach((e) => window.removeEventListener(e, kick)); });
+    vid.addEventListener('canplay', tryPlay, { once: true });
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) tryPlay(); });
+    if (vbtn) vbtn.addEventListener('click', () => { userPaused = !vid.paused; }, true);
+    tryPlay();
+  }
   // Captions follow the film; the closing card stays while the last frame is held.
   const caps = [...document.querySelectorAll('.hero-caps [data-from]')];
   let hold = 0;
