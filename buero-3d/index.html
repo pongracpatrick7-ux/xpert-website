@@ -8,5 +8,5 @@ h1{font-size:22px;font-weight:600}p{color:#9aa6bd;margin:6px 0 18px}
 <body><h1>3D-Büro (Test)</h1><p>Mit der Maus oder dem Finger drehen (Maus: auch nach oben und unten). Regler bewegen: das Büro wächst mit den m².</p>
 <div id="o"></div><div class="c"><input type="range" id="r" min="20" max="400" step="5" value="80"><b id="v">80 m²</b></div>
 <script type="module">import {mountOffice} from '../assets/js/office3d.js';
-const o=mountOffice(document.getElementById('o'),80);window.o3=o;const r=document.getElementById('r');
+const o=mountOffice(document.getElementById('o'),80,{quality:new URLSearchParams(location.search).get('q')||undefined});window.o3=o;const r=document.getElementById('r');
 r.addEventListener('input',()=>{document.getElementById('v').textContent=r.value+' m²';o.set(+r.value)});</script></body></html>
