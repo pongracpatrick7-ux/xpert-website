@@ -79,3 +79,31 @@ if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-mot
     el.classList.add('rv'); io.observe(el);
   });
 }
+
+// Phone: floating price bar while choosing options (the full summary sits further down).
+const calcRoot = document.getElementById('calc');
+if (calcRoot && 'IntersectionObserver' in window) {
+  const bar = document.createElement('div');
+  bar.className = 'mprice';
+  bar.innerHTML = `<div><small>${EN ? 'Your price' : 'Ihr Preis'}</small><strong></strong></div><button type="button">${EN ? 'Continue' : 'Weiter'}</button>`;
+  document.body.appendChild(bar);
+  const out = bar.querySelector('strong');
+  let optsIn = false, sumIn = false;
+  const show = () => bar.classList.toggle('on', optsIn && !sumIn && !!out.textContent);
+  const copy = () => {
+    const p = calcRoot.querySelector('.sum-price strong');
+    out.textContent = p ? p.textContent : ''; out.className = p && p.classList.contains('word') ? 'word' : '';
+    show();
+  };
+  const io = new IntersectionObserver((es) => {
+    es.forEach((e) => { if (e.target.classList.contains('calc-sum')) sumIn = e.isIntersecting; else optsIn = e.isIntersecting; });
+    show();
+  }, { rootMargin: '-70px 0px -90px 0px' });
+  const watch = () => { io.disconnect(); optsIn = sumIn = false; calcRoot.querySelectorAll('.calc-opts, .calc-sum').forEach((el) => io.observe(el)); copy(); };
+  new MutationObserver(() => { clearTimeout(watch.t); watch.t = setTimeout(watch, 60); }).observe(calcRoot, { childList: true, subtree: true, characterData: true });
+  bar.querySelector('button').addEventListener('click', () => {
+    const s = calcRoot.querySelector('.calc-sum');
+    if (s) window.scrollTo({ top: s.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
+  });
+  setTimeout(watch, 400);
+}

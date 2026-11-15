@@ -533,3 +533,61 @@ body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
 .site-footer:has(.foot-grid){background:linear-gradient(180deg,rgba(3,6,11,.55),rgba(3,6,11,.9))}
 .legal{position:relative}
 .chip b{overflow-wrap:break-word;hyphens:auto;-webkit-hyphens:auto}
+
+/* ===== Phone version (desktop untouched) ===== */
+.mprice{display:none}
+@media (max-width:900px){
+  .site-header .wrap{min-height:64px}
+  .menu-toggle{border-radius:999px;padding:10px 18px;border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.04)}
+  .nav{background:rgba(4,10,21,.97);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);padding:10px 20px 26px;box-shadow:0 30px 60px rgba(0,0,0,.6);max-height:calc(100svh - 64px);overflow:auto}
+  .nav>a:not(.btn){padding:18px 4px;font-size:14px;letter-spacing:.22em}
+  .nav .lang{padding:18px 4px;font-size:13px}
+  .nav .btn{padding:17px 24px;font-size:13px;margin-top:10px}
+  .facts{column-gap:18px}.facts div{padding:20px 0}.facts strong{font-size:18px}
+  .sec-head h2{font-size:clamp(30px,8.4vw,40px)}
+  .sec-head p{font-size:15.5px}
+  .calc-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;overflow:visible;border-radius:24px;padding:8px}
+  .calc-tabs button{white-space:normal;border-radius:16px;padding:13px 10px;min-height:48px;line-height:1.25}
+  .room-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;overflow:visible;border-radius:24px;padding:8px}
+  .room-tabs button{border-radius:16px;min-height:46px;padding:11px 10px}
+  .calc-opts{border-radius:24px;gap:30px}
+  .calc-sum{border-radius:24px;padding:26px}.calc-sum::before{left:26px;right:26px}
+  .sum-price strong{font-size:46px}
+  .form{border-radius:24px}
+  .form input,.form select,.form textarea,.m2box input{font-size:16px}
+  .form .btn,.calc-sum .btn{padding:18px 24px}
+  .room-stage{border-radius:22px}
+  .mprice{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:40;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 12px 12px 20px;border-radius:999px;background:rgba(10,22,40,.92);border:1px solid rgba(11,177,255,.35);box-shadow:0 20px 50px rgba(0,0,0,.6);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);opacity:0;transform:translateY(24px);pointer-events:none;transition:opacity .35s var(--ease),transform .35s var(--ease)}
+  .mprice.on{opacity:1;transform:none;pointer-events:auto}
+  .mprice small{display:block;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#9FB0C3}
+  .mprice strong{font-family:var(--serif);font-weight:400;font-size:22px;line-height:1.15;color:#fff;white-space:nowrap}
+  .mprice strong.word{font-size:16px}
+  .mprice button{flex:none;border:0;cursor:pointer;font:700 13px var(--sans);color:var(--night);padding:13px 20px;border-radius:999px;background:linear-gradient(135deg,#34c0ff,var(--blue))}
+}
+@media (max-width:620px){
+  .wrap{padding:0 18px}
+  .svc-grid{grid-auto-rows:270px}
+  .svc-no{left:20px;top:18px}.svc-body{left:20px;right:20px;bottom:18px}
+  .svc-txt{font-size:13.5px}
+  .steps{row-gap:0}
+  .steps li{display:grid;grid-template-columns:58px 1fr;column-gap:8px;padding:22px 0;border-bottom:1px solid var(--hair)}
+  .steps li:first-child{border-top:1px solid var(--hair)}
+  .step-no{grid-row:1/3;font-size:46px;line-height:50px;height:50px;-webkit-text-stroke-color:rgba(23,220,175,.7)}
+  .steps h3{margin:2px 0 6px;font-size:20px}
+  .steps p{max-width:none}
+  .process{padding:80px 0}
+  .prices{padding:80px 0}
+  .rooms-head h3{font-size:30px}
+  .room-list li{padding:16px 6px 16px 46px}.room-list li::before{left:6px}
+  .room-list li.on,.room-list li:hover{padding-left:50px}
+  .promise h2{font-size:clamp(38px,11vw,48px)}
+  .promise p{font-size:16.5px}
+  .promise .hero-actions{flex-direction:column;align-items:stretch}.promise .hero-actions a{justify-content:center;text-align:center}
+  .contact-panel .actions{flex-direction:column}.contact-panel .actions a{text-align:center}
+  .contact-panel dd{font-size:18px;overflow-wrap:anywhere}
+  .site-footer .foot-grid{grid-template-columns:1fr 1fr;gap:34px 20px;padding-top:50px;padding-bottom:40px}
+  .foot-grid>div:not(.foot-brand){grid-column:1/-1;order:3}
+  .foot-brand{grid-column:1/-1}
+  .site-footer .foot-bar{display:flex;flex-direction:column;gap:6px;padding-bottom:calc(26px + env(safe-area-inset-bottom))}
+  .hero-caps .cap{font-size:22px;max-width:calc(100% - 20px)}
+}
