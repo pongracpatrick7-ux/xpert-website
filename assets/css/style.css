@@ -57,7 +57,7 @@ p{margin:0}
 .hero-bg,.hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .hero-bg{filter:grayscale(.6)}
 .hero-video{background:#0f1a2b}
-.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,14,0) 0%,rgba(5,8,14,0) 62%,rgba(5,8,14,.55) 82%,rgba(5,8,14,.9) 94%,#05080E 100%),linear-gradient(90deg,rgba(2,11,27,.9) 0%,rgba(2,11,27,.62) 42%,rgba(2,11,27,.12) 100%)}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,14,0) 0%,rgba(5,8,14,0) 62%,rgba(5,8,14,.55) 82%,rgba(5,8,14,.9) 94%,#05080E 100%),linear-gradient(90deg,rgba(2,11,27,.5) 0%,rgba(2,11,27,.22) 38%,rgba(2,11,27,0) 70%)}
 .video-toggle{position:absolute;right:20px;bottom:20px;z-index:2;width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.35);background:rgba(2,11,27,.55);color:#fff;cursor:pointer;display:grid;place-items:center}
 .video-toggle:hover{background:rgba(2,11,27,.8)}
 .video-toggle:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
@@ -296,3 +296,24 @@ p{margin:0}
 
 .opt.info.special{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:26px;align-items:center}.opt.info.special img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:16px;border:1px solid rgba(255,255,255,.16);display:block}.opt.info.special:not(:has(img)){display:block}
 @media (max-width:720px){.opt.info.special{grid-template-columns:1fr}}
+
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.hero .wrap.hero-stage{display:flex;align-items:flex-end;padding-top:110px;padding-bottom:44px}
+.hero-caps{position:relative;width:min(100%,440px);min-height:230px}
+.hero-caps .cap,.hero-end{position:absolute;left:0;bottom:0;opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease;pointer-events:none}
+.hero-caps .on{opacity:1;transform:none;pointer-events:auto}
+.hero-caps .cap{margin:0;padding:6px 0 6px 20px;border-left:2px solid var(--mint);font-family:var(--serif);font-size:clamp(22px,2.3vw,31px);line-height:1.25;color:#fff;text-shadow:0 2px 18px rgba(2,11,27,.85),0 0 2px rgba(2,11,27,.6);max-width:400px}
+.hero-end{display:flex;flex-direction:column;gap:10px;align-items:flex-start;padding:24px 26px;border-radius:22px;background:rgba(14,22,36,.62);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);width:min(100%,360px)}
+.hero-end .label{display:flex;align-items:center;gap:10px;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#9AA6B4}
+.hero-end .dot{width:8px;height:8px;border-radius:50%;background:var(--mint);animation:pulse 2s ease-in-out infinite}
+.end-time{font-family:var(--serif);font-size:36px;line-height:1.1;color:#fff}
+.end-place{font-size:15px;color:#B4C0CD;margin-bottom:8px}
+@media (max-width:900px){.hero{--vh:min(125vw,78svh)}.hero-video{inset:0 0 auto 0;height:var(--vh)}.hero::after{bottom:auto;height:var(--vh);background:linear-gradient(180deg,rgba(5,8,14,0) 55%,rgba(5,8,14,.75) 90%,#05080E 100%)}.hero .wrap.hero-stage{flex:none;height:var(--vh);padding-top:70px;padding-bottom:22px}.video-toggle{bottom:auto;top:14px;right:14px}.hero-caps{min-height:200px}.hero-end{padding:18px 20px;gap:7px}.end-time{font-size:29px}.hero-end .btn{padding:12px 20px;font-size:14px}}
+@media (prefers-reduced-motion:reduce){.hero-caps .cap,.hero-end{transition:none}}
+.hero .wrap:has(>.facts){flex:none;display:block;padding-top:0;padding-bottom:0}
+.hero .wrap.hero-stage{padding-bottom:30px}
+.hero-caps{width:min(100%,560px);min-height:150px}
+@media (min-width:901px){.hero-end{display:grid;grid-template-columns:auto auto;column-gap:30px;row-gap:6px;align-items:center;width:auto;padding:20px 24px}.hero-end .label,.hero-end .end-time,.hero-end .end-place{grid-column:1}.hero-end .end-place{margin:0}.hero-end .btn{grid-column:2;grid-row:1/4;white-space:nowrap}.end-time{font-size:32px}}
+@media (max-width:900px){.hero .wrap.hero-stage{padding-bottom:22px}}
+.end-time,.end-place{white-space:nowrap}
+@media (min-width:901px){.hero{min-height:clamp(560px,calc(100svh - 72px),880px)}}

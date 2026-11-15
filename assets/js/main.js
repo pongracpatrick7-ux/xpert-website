@@ -44,7 +44,22 @@ if (vid) {
   if (calm) { vid.removeAttribute('autoplay'); vid.preload = 'none'; setPaused(true); }
   vid.src = vid.dataset.src;
   if (!calm) vid.play().catch(() => setPaused(true));
+  // Captions follow the film; the closing card stays while the last frame is held.
+  const caps = [...document.querySelectorAll('.hero-caps [data-from]')];
+  let hold = 0;
+  const sync = () => {
+    const t = vid.currentTime;
+    caps.forEach((c) => c.classList.toggle('on', t >= +c.dataset.from && t < (c.dataset.to ? +c.dataset.to : 1e9)));
+  };
+  const restart = () => { clearTimeout(hold); hold = 0; vid.currentTime = 0; vid.play().catch(() => setPaused(true)); };
+  if (!calm) {
+    vid.addEventListener('timeupdate', sync);
+    vid.addEventListener('playing', sync);
+    vid.addEventListener('ended', () => { hold = setTimeout(restart, 6000); });
+  }
   if (vbtn) vbtn.addEventListener('click', () => {
-    if (vid.paused) { vid.play(); setPaused(false); } else { vid.pause(); setPaused(true); }
+    if (calm && !vid.dataset.live) { vid.dataset.live = 1; vid.addEventListener('timeupdate', sync); vid.addEventListener('ended', () => { hold = setTimeout(restart, 6000); }); }
+    if (hold) { restart(); setPaused(false); }
+    else if (vid.paused) { vid.play(); setPaused(false); } else { vid.pause(); setPaused(true); }
   });
 }
