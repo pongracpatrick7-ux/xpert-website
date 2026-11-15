@@ -35,6 +35,8 @@
     moveHint: 'Deep cleaning of the whole apartment, so it is ready for handover or for your first day.',
     floors: 'Floors', floorsUpTo: 'up to 3', floorsMore: '7+', floorsHint: 'Stairs, railings, landings and entrance area.',
     sfreqs: { weekly: 'Once a week', twice: 'Twice a month', monthly: 'Once a month', once: 'One-off / deep cleaning' },
+    stays: { hotel: ['Hotel', 'Rooms and suites, cleaned between guests'], airbnb: ['Airbnb & holiday home', 'Changeover cleaning between bookings'] }, stayLegend: 'What do we clean?',
+    hotelSteps: ['Your price is individual. It depends on how often we clean and how big the space is.', 'Request a visit. We look at everything together on site.', 'Afterwards you receive your personal fixed-price offer.'],
     hotelTitle: 'Hotel rooms & Airbnb', hotelText: 'For hotel rooms and holiday rentals we offer a special price that depends on how often we clean. Request an on-site meeting and you get a fixed price for every changeover.',
     specialTitle: 'Special requests', specialText: 'Commercial cleaning, deep cleaning, business premises or anything that does not fit above: send us a request and we will contact you within 24 hours.',
     sum: 'Your price', perVisit: 'per visit', oneOff: 'one-off', perClean: 'per cleaning', instead: 'instead of',
@@ -68,6 +70,8 @@
     moveHint: 'Grundreinigung der ganzen Wohnung – bereit für die Übergabe oder für Ihren ersten Tag.',
     floors: 'Etagen', floorsUpTo: 'bis 3', floorsMore: '7+', floorsHint: 'Treppen, Geländer, Podeste und Eingangsbereich.',
     sfreqs: { weekly: '1× pro Woche', twice: '2× im Monat', monthly: '1× im Monat', once: 'Einmalig / Grundreinigung' },
+    stays: { hotel: ['Hotel', 'Zimmer und Suiten, gereinigt zwischen den Gästen'], airbnb: ['Airbnb & Ferienwohnung', 'Wechselreinigung zwischen den Buchungen'] }, stayLegend: 'Was reinigen wir?',
+    hotelSteps: ['Ihr Preis ist individuell. Er richtet sich danach, wie oft wir reinigen und wie groß die Fläche ist.', 'Fragen Sie einen Besichtigungstermin an. Wir sehen uns alles gemeinsam vor Ort an.', 'Danach erhalten Sie Ihr persönliches Festpreis-Angebot.'],
     hotelTitle: 'Hotelzimmer & Airbnb', hotelText: 'Für Hotelzimmer und Ferienwohnungen bieten wir einen Sonderpreis – abhängig davon, wie oft wir reinigen. Fragen Sie einen Vor-Ort-Termin an und Sie erhalten einen Festpreis für jeden Wechsel.',
     specialTitle: 'Sonderanfragen', specialText: 'Gewerbereinigung, Grundreinigung, Geschäftsräume oder alles, was oben nicht passt: Senden Sie uns eine Anfrage – wir melden uns innerhalb von 24 Stunden.',
     sum: 'Ihr Preis', perVisit: 'pro Termin', oneOff: 'einmalig', perClean: 'pro Reinigung', instead: 'statt',
@@ -99,7 +103,7 @@
     kueche: ['kueche-vorher.webp', 'kueche-nachher.webp', [[47, 50], [23, 70], [69, 40], [85, 58], [66, 86]], false],
   };
 
-  const state = { tab: 'apt', apt: { size: 's1', freq: 'once' }, office: { m2: 100 }, move: { size: 's1', when: 'after' }, stairs: { floors: 3, freq: 'once' }, room: 'bad' };
+  const state = { tab: 'apt', apt: { size: 's1', freq: 'once' }, office: { m2: 100 }, move: { size: 's1', when: 'after' }, stairs: { floors: 3, freq: 'once' }, hotel: { kind: 'hotel' }, room: 'bad' };
   const round2 = (n) => Math.round(n * 100) / 100;
   const pct = (n) => Math.round(n * 100) + ' %';
 
@@ -134,7 +138,7 @@
       if (k !== 'once') lines.push([T.lDiscount, '−' + pct(1 - price / (STAIRS.once + extra * STAIRS.onceExtra))]);
       return { lines, price: round2(price), unit: T.perVisit, cta: T.cta };
     }
-    if (s.tab === 'hotel') return { lines: [[T.service, T.tabs.hotel]], price: null, word: T.individual, cta: T.ctaMeeting };
+    if (s.tab === 'hotel') return { lines: [[T.service, T.stays[s.hotel.kind][0]]], steps: T.hotelSteps, price: null, word: T.individual, cta: T.ctaMeeting };
     return { lines: [[T.service, T.tabs.special]], price: null, word: T.individual, cta: T.ctaSend };
   }
 
@@ -197,6 +201,8 @@
       return chips('floors', T.floors, fl, s.stairs.floors, T.floorsHint) +
         chips('sfreq', T.freq, Object.keys(STAIRS_FREQ).map((k) => [k, T.sfreqs[k], '', stairsSave(k) ? '−' + pct(stairsSave(k)) : '']), s.stairs.freq);
     }
+    if (s.tab === 'hotel') return `<fieldset class="opt"><legend>${T.stayLegend}</legend><div class="stays">` + Object.keys(T.stays).map((k) =>
+      `<label class="stay"><input type="radio" name="stay" value="${k}"${k === s.hotel.kind ? ' checked' : ''}><span><img src="${IMG}${k}.webp" alt="" loading="lazy" width="900" height="675"><b>${esc(T.stays[k][0])}</b><small>${esc(T.stays[k][1])}</small></span></label>`).join('') + '</div></fieldset>';
     const [title, text] = s.tab === 'hotel' ? [T.hotelTitle, T.hotelText] : [T.specialTitle, T.specialText];
     return `<div class="opt info"><h3>${title}</h3><p>${text}</p></div>`;
   }
@@ -206,7 +212,7 @@
     const price = r.price == null ? `<strong class="word">${r.word}</strong>` :
       `${r.old ? `<s>${T.instead} ${eur(r.old)}</s>` : ''}<strong>${eur(r.price)}</strong><small>${r.unit}</small>`;
     return `<div class="kicker">${T.sum}</div><dl>${r.lines.map(([a, b]) => `<div><dt>${esc(a)}</dt><dd>${esc(b)}</dd></div>`).join('')}</dl>
-      <div class="sum-price" aria-live="polite">${price}</div><p class="sum-note">${T.note}</p>
+      ${r.steps ? `<ol class="sum-steps">${r.steps.map((t) => `<li>${esc(t)}</li>`).join('')}</ol>` : ''}<div class="sum-price" aria-live="polite">${price}</div><p class="sum-note">${T.note}</p>
       <button type="button" class="btn" id="calc-cta">${r.cta}</button>`;
   }
 
@@ -250,6 +256,7 @@
     else if (name === 'when') state.move.when = value;
     else if (name === 'floors') state.stairs.floors = Number(value);
     else if (name === 'sfreq') state.stairs.freq = value;
+    else if (name === 'stay') state.hotel.kind = value;
     else if (id === 'm2n') return setM2(value, 'm2n');
     else return;
     renderSum();

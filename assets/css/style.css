@@ -220,6 +220,17 @@ p{margin:0}
 .office-3d{position:absolute;inset:0}.office-3d canvas{width:100%;height:100%;display:block}
 .office-hint{z-index:2;display:none;position:absolute;right:2%;bottom:4%;font-size:12px;color:var(--muted,#9aa6bd);background:rgba(2,11,27,.55);padding:3px 10px;border-radius:999px;pointer-events:none}.office-pic.is3d .office-hint{display:block}
 @media (max-width:560px){.office-hint{left:50%;right:auto;bottom:auto;top:2%;transform:translateX(-50%)}}
+.stays{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:10px}
+.stay{position:relative;cursor:pointer}.stay input{position:absolute;opacity:0;inset:0;cursor:pointer}
+.stay span{display:flex;flex-direction:column;gap:4px;height:100%;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.16);background:rgba(5,8,14,.5);padding-bottom:16px;transition:border-color .2s,box-shadow .2s}
+.stay img{width:100%;height:auto;flex:none;aspect-ratio:4/3;object-fit:cover;display:block;margin-bottom:10px;filter:saturate(.9);transition:filter .2s}
+.stay b{font-weight:600;color:#fff;font-size:17px;padding:0 16px}.stay small{font-size:13px;color:#8F9AA8;padding:0 16px}
+.stay:hover span{border-color:rgba(11,177,255,.55)}.stay input:checked+span{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue) inset}.stay input:checked+span img{filter:none}
+.stay input:focus-visible+span{outline:3px solid var(--blue);outline-offset:3px}
+.sum-steps{margin:0;padding:0;list-style:none;counter-reset:st;display:flex;flex-direction:column;gap:12px;font-size:14px;color:#C9D1DC;line-height:1.5}
+.sum-steps li{counter-increment:st;position:relative;padding-left:34px}
+.sum-steps li::before{content:counter(st);position:absolute;left:0;top:0;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--night);background:var(--mint)}
+@media (max-width:560px){.stays{grid-template-columns:1fr}}
 .office-ctrl{display:flex;gap:18px;align-items:center}
 .office-ctrl input[type=range]{flex:1;accent-color:var(--blue);height:28px}
 .m2box{display:flex;align-items:center;gap:8px;background:rgba(5,8,14,.6);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:0 14px}
