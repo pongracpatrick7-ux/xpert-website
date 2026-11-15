@@ -141,16 +141,24 @@
   const sizeOpts = () => Object.keys(APT).map((k) => [k, T.sizes[k][0], T.sizes[k][1]]);
 
   // Office pictures: [from this many m², file]. The slider fades to the matching one.
-  const OFFICE_IMG = [[0, 'buero-80.webp'], [150, 'buero-300.webp']];
+  // [from m², picture, drawn size at the start of the class, drawn size at its end]
+  const OFFICE_IMG = [[0, 'buero-80.webp', 0.56, 0.84], [115, 'buero-150.webp', 0.8, 0.92], [225, 'buero-300.webp', 0.9, 1]];
   const officeIdx = (m2) => OFFICE_IMG.reduce((best, [from], i) => (m2 >= from ? i : best), 0);
+  // The office also grows with every step of the slider, inside each size class
+  function officeScale(m2) {
+    const i = officeIdx(m2), [from, , s0, s1] = OFFICE_IMG[i], lo = Math.max(from, 20), hi = OFFICE_IMG[i + 1] ? OFFICE_IMG[i + 1][0] : 400;
+    const t = Math.min(1, Math.max(0, (m2 - lo) / (hi - lo)));
+    return (s0 + (s1 - s0) * t).toFixed(3);
+  }
   function officePic(m2) {
     const on = officeIdx(m2);
-    return OFFICE_IMG.map(([, f], i) => `<img src="${IMG}${f}" alt="" width="1400" height="781"${i === on ? ' class="on"' : ''}>`).join('') + `<span class="office-m2">${m2} m²</span>`;
+    return `<div class="office-zoom" style="transform:scale(${officeScale(m2)})">` + OFFICE_IMG.map(([, f], i) => `<img src="${IMG}${f}" alt="" width="1400" height="781"${i === on ? ' class="on"' : ''}>`).join('') + `</div><span class="office-m2">${m2} m²</span>`;
   }
   function officeUpdate(m2) {
     const pic = optsEl.querySelector('#office-pic'); if (!pic) return;
     const on = officeIdx(m2);
     pic.querySelectorAll('img').forEach((im, i) => im.classList.toggle('on', i === on));
+    pic.querySelector('.office-zoom').style.transform = `scale(${officeScale(m2)})`;
     pic.querySelector('.office-m2').textContent = m2 + ' m²';
   }
 
