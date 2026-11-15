@@ -204,6 +204,7 @@
     if (s.tab === 'hotel') return `<fieldset class="opt"><legend>${T.stayLegend}</legend><div class="stays">` + Object.keys(T.stays).map((k) =>
       `<label class="stay"><input type="radio" name="stay" value="${k}"${k === s.hotel.kind ? ' checked' : ''}><span><img src="${IMG}${k}.webp" alt="" loading="lazy" width="900" height="675"><b>${esc(T.stays[k][0])}</b><small>${esc(T.stays[k][1])}</small></span></label>`).join('') + '</div></fieldset>';
     const [title, text] = s.tab === 'hotel' ? [T.hotelTitle, T.hotelText] : [T.specialTitle, T.specialText];
+    if (s.tab === 'special') return `<div class="opt info special"><img src="${IMG}sonder.webp" alt="" loading="lazy" onerror="this.remove()"><div><h3>${title}</h3><p>${text}</p></div></div>`;
     return `<div class="opt info"><h3>${title}</h3><p>${text}</p></div>`;
   }
 

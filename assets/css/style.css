@@ -293,3 +293,6 @@ p{margin:0}
   .calc-tabs button,.room-tabs button{white-space:nowrap;flex:none}
   .rooms{margin-top:60px}
 }
+
+.opt.info.special{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:26px;align-items:center}.opt.info.special img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:16px;border:1px solid rgba(255,255,255,.16);display:block}.opt.info.special:not(:has(img)){display:block}
+@media (max-width:720px){.opt.info.special{grid-template-columns:1fr}}
