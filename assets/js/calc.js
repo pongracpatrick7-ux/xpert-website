@@ -14,8 +14,13 @@
   const FREQ = { once: 0, monthly: 0.10, biweekly: 0.15, weekly: 0.20 }; // discount
   const MOVE_PLUS = 0.25;                                          // deep cleaning: +25 %
   const OFFICE = { perM2: 1.19, min: 80 };
-  const STAIRS = { base: 70, baseFloors: 3, perExtraFloor: 20, maxFloors: 6 };
-  const STAIRS_FREQ = { weekly: 0, twice: 0.15, monthly: 0.20, once: 0.40 }; // surcharge
+  // Staircase: one-off deep cleaning is the starting price, regular visits are cheaper.
+  // once/monthly = price per visit up to 3 floors, plus the amount per extra floor (4 to 6).
+  const STAIRS = { once: 95, onceExtra: 27, monthly: 70, monthlyExtra: 20, baseFloors: 3, maxFloors: 6 };
+  // Shown as a discount. monthly: 70 instead of 95 (-26 %); twice and weekly: further discount on the monthly price.
+  const STAIRS_FREQ = { once: 0, monthly: 0, twice: 0.15, weekly: 0.20 };
+  // What the badge shows: the saving compared with the one-off price (-26 %, -37 %, -41 %)
+  const stairsSave = (k) => (k === 'once' ? 0 : 1 - STAIRS.monthly * (1 - STAIRS_FREQ[k]) / STAIRS.once);
 
   // ---------- Texts ----------
   const T = en ? {
@@ -94,7 +99,7 @@
     kueche: ['kueche-vorher.webp', 'kueche-nachher.webp', [[47, 50], [23, 70], [69, 40], [85, 58], [66, 86]], false],
   };
 
-  const state = { tab: 'apt', apt: { size: 's1', freq: 'once' }, office: { m2: 100 }, move: { size: 's1', when: 'after' }, stairs: { floors: 3, freq: 'weekly' }, room: 'bad' };
+  const state = { tab: 'apt', apt: { size: 's1', freq: 'once' }, office: { m2: 100 }, move: { size: 's1', when: 'after' }, stairs: { floors: 3, freq: 'once' }, room: 'bad' };
   const round2 = (n) => Math.round(n * 100) / 100;
   const pct = (n) => Math.round(n * 100) + ' %';
 
@@ -124,9 +129,10 @@
       const f = s.stairs.floors, up = STAIRS_FREQ[s.stairs.freq];
       const lines = [[T.service, T.tabs.stairs], [T.lFloors, f > STAIRS.maxFloors ? T.floorsMore : T.floorsN(f)], [T.lFreq, T.sfreqs[s.stairs.freq]]];
       if (f > STAIRS.maxFloors) return { lines, price: null, word: T.onRequest, cta: T.ctaSend };
-      const base = STAIRS.base + Math.max(0, f - STAIRS.baseFloors) * STAIRS.perExtraFloor;
-      if (up) lines.push([T.lSurcharge, '+' + pct(up)]);
-      return { lines, price: round2(base * (1 + up)), unit: T.perVisit, cta: T.cta };
+      const extra = Math.max(0, f - STAIRS.baseFloors), k = s.stairs.freq, monthly = STAIRS.monthly + extra * STAIRS.monthlyExtra;
+      const price = k === 'once' ? STAIRS.once + extra * STAIRS.onceExtra : k === 'monthly' ? monthly : monthly * (1 - up);
+      if (k !== 'once') lines.push([T.lDiscount, '−' + pct(1 - price / (STAIRS.once + extra * STAIRS.onceExtra))]);
+      return { lines, price: round2(price), unit: T.perVisit, cta: T.cta };
     }
     if (s.tab === 'hotel') return { lines: [[T.service, T.tabs.hotel]], price: null, word: T.individual, cta: T.ctaMeeting };
     return { lines: [[T.service, T.tabs.special]], price: null, word: T.individual, cta: T.ctaSend };
@@ -189,7 +195,7 @@
     if (s.tab === 'stairs') {
       const fl = [[3, T.floorsUpTo]]; for (let i = 4; i <= STAIRS.maxFloors; i++) fl.push([i, String(i)]); fl.push([STAIRS.maxFloors + 1, T.floorsMore, T.sizes.s4[1]]);
       return chips('floors', T.floors, fl, s.stairs.floors, T.floorsHint) +
-        chips('sfreq', T.freq, Object.keys(STAIRS_FREQ).map((k) => [k, T.sfreqs[k], '', STAIRS_FREQ[k] ? '+' + pct(STAIRS_FREQ[k]) : '']), s.stairs.freq);
+        chips('sfreq', T.freq, Object.keys(STAIRS_FREQ).map((k) => [k, T.sfreqs[k], '', stairsSave(k) ? '−' + pct(stairsSave(k)) : '']), s.stairs.freq);
     }
     const [title, text] = s.tab === 'hotel' ? [T.hotelTitle, T.hotelText] : [T.specialTitle, T.specialText];
     return `<div class="opt info"><h3>${title}</h3><p>${text}</p></div>`;
