@@ -44,7 +44,7 @@
     note: 'Fixed price. No VAT charged (§ 19 UStG).',
     cta: 'Request cleaning', ctaMeeting: 'Request on-site meeting', ctaSend: 'Send request',
     service: 'Service', lSize: 'Size', lFreq: 'Rhythm', lArea: 'Area', lWhen: 'When', lFloors: 'Floors', lDiscount: 'Discount', lSurcharge: 'Surcharge',
-    floorsN: (n) => (n <= 3 ? 'up to 3 floors' : n + ' floors'),
+    floorsN: (n) => (n <= 3 ? 'Up to 3 floors' : n + ' floors'),
     roomsTitle: 'What we clean in every room', roomsLead: 'Move over the points: you see the spot clean and what we do there.',
     demo: 'Sample picture',
     yourChoice: 'Your selection',
@@ -79,7 +79,7 @@
     note: 'Festpreis. Gemäß § 19 UStG ohne Umsatzsteuer.',
     cta: 'Reinigung anfragen', ctaMeeting: 'Vor-Ort-Termin anfragen', ctaSend: 'Anfrage senden',
     service: 'Leistung', lSize: 'Größe', lFreq: 'Rhythmus', lArea: 'Fläche', lWhen: 'Wann', lFloors: 'Etagen', lDiscount: 'Rabatt', lSurcharge: 'Zuschlag',
-    floorsN: (n) => (n <= 3 ? 'bis 3 Etagen' : n + ' Etagen'),
+    floorsN: (n) => (n <= 3 ? 'Bis 3 Etagen' : n + ' Etagen'),
     roomsTitle: 'Das reinigen wir in jedem Raum', roomsLead: 'Fahren Sie über die Punkte: Sie sehen die Stelle sauber – und was wir dort tun.',
     demo: 'Beispielbild',
     yourChoice: 'Ihre Auswahl',
@@ -197,7 +197,7 @@
     if (s.tab === 'move') return chips('size', T.size, sizeOpts(), s.move.size, T.moveHint) +
       chips('when', T.when, Object.keys(T.whens).map((k) => [k, T.whens[k]]), s.move.when);
     if (s.tab === 'stairs') {
-      const fl = [[3, T.floorsUpTo]]; for (let i = 4; i <= STAIRS.maxFloors; i++) fl.push([i, String(i)]); fl.push([STAIRS.maxFloors + 1, T.floorsMore, T.sizes.s4[1]]);
+      const fl = [[3, T.floorsN(3)]]; for (let i = 4; i <= STAIRS.maxFloors; i++) fl.push([i, T.floorsN(i)]); fl.push([STAIRS.maxFloors + 1, T.floorsN(T.floorsMore), T.sizes.s4[1]]);
       return chips('floors', T.floors, fl, s.stairs.floors, T.floorsHint) +
         chips('sfreq', T.freq, Object.keys(STAIRS_FREQ).map((k) => [k, T.sfreqs[k], '', stairsSave(k) ? '−' + pct(stairsSave(k)) : '']), s.stairs.freq);
     }
