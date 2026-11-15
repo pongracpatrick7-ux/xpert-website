@@ -269,7 +269,7 @@ p{margin:0}
 .room-stage{position:relative;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,.1);--x:50%;--y:50%}
 .room-stage img{display:block;width:100%;height:auto}
 .room-clean{position:absolute;inset:0;height:100%!important;object-fit:cover;clip-path:circle(0 at var(--x) var(--y));transition:clip-path .45s ease}
-.room-stage{--rr:clamp(110px,17vw,235px)}
+.room-stage{--rr:clamp(108px,10vw,204px)}
 .room-clean{filter:brightness(1.13) saturate(1.06)}
 .room-stage.show .room-clean{clip-path:circle(var(--rr) at var(--x) var(--y))}
 .room-stage::after{content:"";position:absolute;z-index:1;left:var(--x);top:var(--y);width:calc(var(--rr)*2);height:calc(var(--rr)*2);border-radius:50%;border:2px solid rgba(120,240,205,.9);box-shadow:0 0 34px rgba(120,240,205,.5),inset 0 0 26px rgba(255,255,255,.12);transform:translate(-50%,-50%) scale(0);transition:transform .45s ease;pointer-events:none}
