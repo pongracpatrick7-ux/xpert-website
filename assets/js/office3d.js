@@ -4,12 +4,6 @@ import * as THREE from './vendor/three.module.min.js';
 import { RoomEnvironment } from './vendor/environments/RoomEnvironment.js';
 import { RoundedBoxGeometry } from './vendor/geometries/RoundedBoxGeometry.js';
 import { mergeGeometries } from './vendor/utils/BufferGeometryUtils.js';
-import { EffectComposer } from './vendor/postprocessing/EffectComposer.js';
-import { RenderPass } from './vendor/postprocessing/RenderPass.js';
-import { GTAOPass } from './vendor/postprocessing/GTAOPass.js';
-import { OutputPass } from './vendor/postprocessing/OutputPass.js';
-import { ShaderPass } from './vendor/postprocessing/ShaderPass.js';
-import { FXAAShader } from './vendor/shaders/FXAAShader.js';
 
 // ---------- random numbers that repeat (same office every time) ----------
 function rng(a) { return () => { a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
@@ -140,7 +134,7 @@ function materials() {
     water: new THREE.MeshStandardMaterial({ color: 0x9cc7f0, transparent: true, opacity: 0.45, roughness: 0.05, depthWrite: false }),
     pane: new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveMap: skyTex(), emissiveIntensity: 1.3, roughness: 0.4 }),
     blind: std(0xf4efe4, 0.9, 0, { emissive: 0xfff0d2, emissiveIntensity: 0.6 }),
-    blob: new THREE.MeshBasicMaterial({ map: canvasTex(128, (x, n) => { const g = x.createRadialGradient(n / 2, n / 2, 0, n / 2, n / 2, n / 2); g.addColorStop(0, 'rgba(0,0,0,.6)'); g.addColorStop(0.55, 'rgba(0,0,0,.28)'); g.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = g; x.fillRect(0, 0, n, n); }, false), transparent: true, depthWrite: false, opacity: 0.5 }),
+    blob: new THREE.MeshBasicMaterial({ map: canvasTex(128, (x, n) => { const g = x.createRadialGradient(n / 2, n / 2, 0, n / 2, n / 2, n / 2); g.addColorStop(0, 'rgba(0,0,0,.6)'); g.addColorStop(0.55, 'rgba(0,0,0,.28)'); g.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = g; x.fillRect(0, 0, n, n); }, false), transparent: true, depthWrite: false, opacity: 0.62 }),
   };
   for (const k of ['glass', 'frost', 'water', 'blob']) M[k].userData.noAO = true;
   return M;
@@ -506,13 +500,12 @@ function build(m2) {
 }
 
 export function mountOffice(el, m2, opts = {}) {
-  const renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: 'high-performance' });
-  let pr = Math.min(window.devicePixelRatio || 1, 2); renderer.setPixelRatio(pr);
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+  const pr = Math.min(window.devicePixelRatio || 1, 2); renderer.setPixelRatio(pr);
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.22;
   el.appendChild(renderer.domElement);
   const scene = new THREE.Scene();
-  scene.background = canvasTex(256, (x, s) => { const g = x.createRadialGradient(s / 2, s * 0.55, 0, s / 2, s * 0.55, s * 0.75); g.addColorStop(0, '#2a3454'); g.addColorStop(1, '#10162a'); x.fillStyle = g; x.fillRect(0, 0, s, s); }, false);
   const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture;
   const cam = new THREE.PerspectiveCamera(20, 16 / 9, 2, 160);
   scene.add(new THREE.HemisphereLight(0xfff6ea, 0x3a4360, 1.0));
@@ -523,58 +516,44 @@ export function mountOffice(el, m2, opts = {}) {
   const ground = new THREE.Mesh(new THREE.PlaneGeometry(160, 160), new THREE.ShadowMaterial({ opacity: 0.42 }));
   ground.rotation.x = -Math.PI / 2; ground.position.y = -0.3; ground.receiveShadow = true; ground.userData.noAO = true; scene.add(ground);
 
-  // depth shading (ambient occlusion) on top of the picture; switched off by itself on slow devices
-  const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(4, 4, { type: THREE.HalfFloatType, samples: 4 }));
-  composer.addPass(new RenderPass(scene, cam));
-  const ao = new GTAOPass(scene, cam, 4, 4);
-  ao.updateGtaoMaterial({ radius: 0.42, distanceExponent: 1.4, thickness: 1.3, scale: 1.25, samples: 16, distanceFallOff: 1, screenSpaceRadius: false });
-  ao.updatePdMaterial({ lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: 6, radiusExponent: 1.5, rings: 2, samples: 16 });
-  ao.overrideVisibility = function () { const cache = this._visibilityCache; this.scene.traverse((o) => { cache.set(o, o.visible); if (o.isPoints || o.isLine || o.userData.noAO || o.userData.hide) o.visible = false; }); };
-  ao.enabled = opts.quality !== 'low'; composer.addPass(ao); composer.addPass(new OutputPass());
-  const fxaa = new ShaderPass(FXAAShader); composer.addPass(fxaa); // smooth edges
-
-  let office = null, dist = 34, distT = 34, angle = Math.PI / 4, elev = 0.55, target = 1, shown = 0.7, drag = false, lx = 0, ly = 0, idle = 0, visible = true;
-  let zoom = 1, pending = m2, lastBuild = -1e9, slow = 0, frames = 0, last = performance.now();
-  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let office = null, dist = 34, distT = 34, angle = Math.PI / 4, elev = 0.55, target = 1, shown = 0.7, drag = false, lx = 0, ly = 0, visible = true;
+  let zoom = 1, pending = m2, lastBuild = -1e9, dirty = true;
   function rebuild(v) {
     if (office) { scene.remove(office); office.traverse((o) => { if (o.isMesh && o.userData.own) o.geometry.dispose(); }); office.userData.walls.forEach((x) => x.wl.userData.mats.forEach((m) => m.dispose())); }
-    office = build(v); office.scale.setScalar(shown); scene.add(office); target = 1; distT = 9.4 + 1.8 * Math.sqrt(v);
+    office = build(v); office.scale.setScalar(shown); scene.add(office); target = 1; distT = 9.4 + 1.95 * Math.sqrt(v);
     const { w, d } = office.userData, h = Math.hypot(w, d) / 2 + 3, c = sun.shadow.camera;
     sun.position.set(-30, 12.5, 5); sun.target.position.set(0, 0, 0);
     c.left = -h; c.right = h; c.top = h; c.bottom = -h; c.near = 1; c.far = 90; c.updateProjectionMatrix();
   }
   function size() {
     const w = el.clientWidth, h = el.clientHeight || w * 9 / 16; if (!w) return;
-    renderer.setPixelRatio(pr); renderer.setSize(w, h, false); composer.setPixelRatio(pr); composer.setSize(w, h); fxaa.material.uniforms.resolution.value.set(1 / (w * pr), 1 / (h * pr)); cam.aspect = w / h; cam.updateProjectionMatrix();
+    renderer.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); dirty = true;
   }
-  function frame(now) {
+  function frame(now) { // draws only when something changed: turning, a new size, a resize
     requestAnimationFrame(frame);
-    if (!visible) { last = now; return; }
-    if (pending != null && now - lastBuild > 110) { rebuild(pending); pending = null; lastBuild = performance.now(); last = lastBuild; frames = 0; return; }
+    if (!visible) return;
+    if (pending != null && now - lastBuild > 110) { rebuild(pending); pending = null; lastBuild = performance.now(); dirty = true; }
     if (!office) return;
-    const dt = now - last; last = now;
-    if (opts.quality == null && ++frames > 12 && frames < 90) { // too slow? first drop the depth shading, then the resolution
-      slow += dt > 45 ? 1 : -0.5; slow = Math.max(0, slow);
-      if (slow > 14) { slow = 0; frames = 0; if (ao.enabled) ao.enabled = false; else if (pr > 1) { pr = 1; size(); } }
-    }
-    if (!drag && !still && now - idle > 2500) angle += 0.0016;
+    const moving = Math.abs(target - shown) > 0.002 || Math.abs(distT - dist) > 0.02;
+    if (!dirty && !moving) return;
+    dirty = false;
     shown += (target - shown) * 0.12; office.scale.setScalar(shown);
     dist += (distT - dist) * 0.1; // the camera backs off slower than the room grows, so a big office fills more of the frame
     const sx = Math.sin(angle), cz = Math.cos(angle), D = dist * zoom;
-    cam.position.set(sx * Math.cos(elev) * D, Math.sin(elev) * D + 0.7, cz * Math.cos(elev) * D); cam.lookAt(0, 0.7, 0);
+    cam.position.set(sx * Math.cos(elev) * D, Math.sin(elev) * D - 0.1, cz * Math.cos(elev) * D); cam.lookAt(0, -0.1, 0);
     for (const { wl, nx, nz, deco } of office.userData.walls) {
       const show = nx * sx + nz * cz < 0.12; wl.userData.mats.forEach((m) => { m.colorWrite = show; m.depthWrite = show && !m.transparent; });
-      wl.children.forEach((o) => { o.userData.hide = !show; }); if (deco) deco.visible = show;
+      if (deco) deco.visible = show;
     }
-    composer.render();
+    renderer.render(scene, cam);
   }
   const cv = renderer.domElement; cv.style.touchAction = 'pan-y'; cv.style.cursor = 'grab';
   cv.addEventListener('pointerdown', (e) => { drag = true; lx = e.clientX; ly = e.clientY; cv.setPointerCapture(e.pointerId); cv.style.cursor = 'grabbing'; });
-  cv.addEventListener('pointermove', (e) => { if (!drag) return; angle -= (e.clientX - lx) * 0.008; if (e.pointerType === 'mouse') elev = Math.min(1.15, Math.max(0.28, elev + (e.clientY - ly) * 0.005)); lx = e.clientX; ly = e.clientY; });
-  const up = () => { drag = false; idle = performance.now(); cv.style.cursor = 'grab'; };
+  cv.addEventListener('pointermove', (e) => { if (!drag) return; angle -= (e.clientX - lx) * 0.008; dirty = true; if (e.pointerType === 'mouse') elev = Math.min(1.15, Math.max(0.28, elev + (e.clientY - ly) * 0.005)); lx = e.clientX; ly = e.clientY; });
+  const up = () => { drag = false; cv.style.cursor = 'grab'; };
   cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
   new ResizeObserver(size).observe(el);
-  new IntersectionObserver((en) => { visible = en[0].isIntersecting; }).observe(el);
+  new IntersectionObserver((en) => { visible = en[0].isIntersecting; dirty = true; }).observe(el);
   size(); requestAnimationFrame(frame);
-  return { set: (v) => { pending = v; }, turn: (a, e, z) => { angle = a; if (e) elev = e; if (z) zoom = z; idle = performance.now() + 1e9; } };
+  return { set: (v) => { pending = v; }, turn: (a, e, z) => { angle = a; if (e) elev = e; if (z) zoom = z; dirty = true; } };
 }

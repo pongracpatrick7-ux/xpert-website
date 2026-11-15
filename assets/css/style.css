@@ -215,7 +215,11 @@ p{margin:0}
 .office-pic img.on{opacity:1}
 .office-zoom{position:absolute;inset:0;transition:transform .35s ease}
 @media (prefers-reduced-motion:reduce){.office-zoom,.office-pic img{transition:none}}
-.office-m2{position:absolute;left:50%;bottom:4%;transform:translateX(-50%);font-weight:600;font-size:15px;color:var(--blue);background:rgba(2,11,27,.7);padding:4px 12px;border-radius:999px}
+.office-m2{z-index:2;position:absolute;left:50%;bottom:4%;transform:translateX(-50%);font-weight:600;font-size:15px;color:var(--blue);background:rgba(2,11,27,.7);padding:4px 12px;border-radius:999px}
+.office-pic.is3d{max-width:760px}.office-pic.is3d .office-zoom{display:none}
+.office-3d{position:absolute;inset:0}.office-3d canvas{width:100%;height:100%;display:block}
+.office-hint{z-index:2;display:none;position:absolute;right:2%;bottom:4%;font-size:12px;color:var(--muted,#9aa6bd);background:rgba(2,11,27,.55);padding:3px 10px;border-radius:999px;pointer-events:none}.office-pic.is3d .office-hint{display:block}
+@media (max-width:560px){.office-hint{left:50%;right:auto;bottom:auto;top:2%;transform:translateX(-50%)}}
 .office-ctrl{display:flex;gap:18px;align-items:center}
 .office-ctrl input[type=range]{flex:1;accent-color:var(--blue);height:28px}
 .m2box{display:flex;align-items:center;gap:8px;background:rgba(5,8,14,.6);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:0 14px}

@@ -4,6 +4,7 @@
   const root = document.getElementById('calc');
   if (!root) return;
   const en = document.documentElement.lang === 'en';
+  const SRC = (document.currentScript && document.currentScript.src) || location.href;
   const money = new Intl.NumberFormat(en ? 'en-IE' : 'de-DE', { style: 'currency', currency: 'EUR' });
   const eur = (n) => money.format(n);
   const IMG = (en ? '../' : '') + 'assets/img/raeume/';
@@ -152,7 +153,19 @@
   }
   function officePic(m2) {
     const on = officeIdx(m2);
-    return `<div class="office-zoom" style="transform:scale(${officeScale(m2)})">` + OFFICE_IMG.map(([, f], i) => `<img src="${IMG}${f}" alt="" width="1400" height="781"${i === on ? ' class="on"' : ''}>`).join('') + `</div><span class="office-m2">${m2} m²</span>`;
+    return `<div class="office-zoom" style="transform:scale(${officeScale(m2)})">` + OFFICE_IMG.map(([, f], i) => `<img src="${IMG}${f}" alt="" width="1400" height="781"${i === on ? ' class="on"' : ''}>`).join('') + `</div><span class="office-m2">${m2} m²</span><span class="office-hint">${en ? 'Drag to turn' : 'Zum Drehen ziehen'}</span>`;
+  }
+  // Real 3D office you can turn; the pictures stay as a fallback if the browser cannot show 3D
+  let o3 = null, o3el = null, o3state = 0;
+  function office3d() {
+    const pic = optsEl.querySelector('#office-pic'); if (!pic) return;
+    if (o3el) { pic.appendChild(o3el); pic.classList.add('is3d'); o3.set(state.office.m2); return; }
+    if (o3state) return; o3state = 1;
+    import(new URL('office3d.js', SRC).href).then((mod) => {
+      const el = document.createElement('div'); el.className = 'office-3d';
+      const p = optsEl.querySelector('#office-pic') || pic; p.appendChild(el);
+      try { o3 = mod.mountOffice(el, state.office.m2); o3el = el; p.classList.add('is3d'); } catch (e) { el.remove(); }
+    }).catch(() => {});
   }
   function officeUpdate(m2) {
     const pic = optsEl.querySelector('#office-pic'); if (!pic) return;
@@ -160,6 +173,7 @@
     pic.querySelectorAll('img').forEach((im, i) => im.classList.toggle('on', i === on));
     pic.querySelector('.office-zoom').style.transform = `scale(${officeScale(m2)})`;
     pic.querySelector('.office-m2').textContent = m2 + ' m²';
+    if (o3) o3.set(m2);
   }
 
   function options() {
@@ -213,6 +227,7 @@
   function render() {
     root.querySelectorAll('[role=tab]').forEach((b) => b.setAttribute('aria-selected', b.dataset.tab === state.tab));
     optsEl.innerHTML = options();
+    if (state.tab === 'office') office3d();
     renderSum();
     if (roomsEl) roomsEl.hidden = !(state.tab === 'apt' || state.tab === 'move');
   }
