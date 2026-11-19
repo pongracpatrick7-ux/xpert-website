@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://www.xpertreinigung.de/</loc></url>
-  <url><loc>https://www.xpertreinigung.de/impressum/</loc></url>
-  <url><loc>https://www.xpertreinigung.de/datenschutz/</loc></url>
-  <url><loc>https://www.xpertreinigung.de/barrierefreiheit/</loc></url>
-  <url><loc>https://www.xpertreinigung.de/en/</loc></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url><loc>https://www.xpertreinigung.de/</loc><lastmod>2026-11-19</lastmod>
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.xpertreinigung.de/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.xpertreinigung.de/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.xpertreinigung.de/"/>
+  </url>
+  <url><loc>https://www.xpertreinigung.de/en/</loc><lastmod>2026-11-19</lastmod>
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.xpertreinigung.de/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.xpertreinigung.de/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.xpertreinigung.de/"/>
+  </url>
+  <url><loc>https://www.xpertreinigung.de/impressum/</loc><lastmod>2026-11-19</lastmod></url>
+  <url><loc>https://www.xpertreinigung.de/datenschutz/</loc><lastmod>2026-11-19</lastmod></url>
+  <url><loc>https://www.xpertreinigung.de/barrierefreiheit/</loc><lastmod>2026-11-19</lastmod></url>
 </urlset>
